@@ -35,5 +35,6 @@ class MainActivity : ComponentActivity() {
         // as the ContentView for this Activity.
         gLView = MyGLSurfaceView(this)
         setContentView(gLView)
+
     }
 }
