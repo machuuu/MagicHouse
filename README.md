@@ -1,0 +1,18 @@
+Requirements
+
+1. Android Studio
+
+Instructions
+
+1. Load it into Android Studio
+   1. Install the API 35 from the GOOGLE API image not the GOOGLE PLAYSTORE one
+2. Let gradle do its thing???
+
+Fun Commands
+
+1. cd C:\users\%USER%\AppData\Local\Android\Sdk\emulator\
+2. .\emulator -avd VIRTUAL_DEVICE -gpu host 
+   1. This is useful when you tell the virtual device to use Hardware Acceleration
+   2. This ensures that you can use OpenGL ES 3.1
+      1. It is more difficult to get this configured using VD instead of actual devices.
+      2. I have yet to figure out how to enable OpenGL ES 3.2 with emulated devices although host hardware can do it
