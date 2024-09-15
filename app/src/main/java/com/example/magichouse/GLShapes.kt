@@ -2,10 +2,12 @@ package com.example.magichouse
 
 import android.content.Context
 import android.opengl.GLES31
+import android.util.Log
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
+
 
 // number of coordinates per vertex in this array
 const val COORDS_PER_VERTEX = 3
@@ -234,14 +236,14 @@ class MagicCard(private val context: Context)
             GLES31.glAttachShader(it, fragmentShader)
             // creates OpenGL ES program executables
             GLES31.glLinkProgram(it)
-            printGlError(TriangleTag, "Error Shader Creating Program")
+            printGlError(MagicCardTag, "Error Shader Creating Program")
         }
 
         // Use 'apply' for VAO generation and binding
         m_VAO = IntArray(1).apply {
             GLES31.glGenVertexArrays(1, this, 0)
             GLES31.glBindVertexArray(this[0])
-            printGlError(TriangleTag, "Error Generating VAO")
+            printGlError(MagicCardTag, "Error Generating VAO")
         }
 
         // Use 'apply' to generate VBO and bind vertex data
@@ -263,7 +265,7 @@ class MagicCard(private val context: Context)
                         GLES31.GL_STATIC_DRAW
                     )
                 }
-            printGlError(TriangleTag, "Error Generating VBO")
+            printGlError(MagicCardTag, "Error Generating VBO")
 
             // Specify the layout of the vertex data (position attribute 0)
             GLES31.glVertexAttribPointer(0, COORDS_PER_VERTEX, GLES31.GL_FLOAT, false, 8 * 4, 0 * 4) // 8 wide, start 0
@@ -273,30 +275,77 @@ class MagicCard(private val context: Context)
             GLES31.glVertexAttribPointer(2, COORD_PER_TEXTURE, GLES31.GL_FLOAT, false, 8 * 4, 6 * 4) // 8 wide, start 6
             GLES31.glEnableVertexAttribArray(2)
 
-            printGlError(TriangleTag, "Error Allocating VBO to VAO")
+            printGlError(MagicCardTag, "Error Allocating VBO to VAO")
         }
 
         // Unbind when it has been setup
         GLES31.glBindVertexArray(0)
-        printGlError(TriangleTag, "Error Initializing")
+        printGlError(MagicCardTag, "Error Initializing")
     }
 
-    fun draw(mvpMatrix: FloatArray) {
+    val m_TextureScale = FloatArray(4).apply {
+        this[0] = 1.0f  // First row, first column
+        this[1] = 0.0f  // First row, second column
+        this[2] = 0.0f  // Second row, first column
+        this[3] = 1.0f  // Second row, second column
+    }
+    val lightConstant: Float = 1.0f;
+    val lightLinear: Float = 0.09f;
+    val lightQuadratic: Float = 0.032f;
+    val lightPos = floatArrayOf(0f, 0f, 0f)
+    val lightAmbient = floatArrayOf(0.2f, 0.2f, 0.2f)
+    val lightDiffuse = floatArrayOf(0.5f, 0.5f, 0.5f)
+    val lightSpecular = floatArrayOf(1.0f, 1.0f, 1.0f)
+    val objectFrontColor = floatArrayOf(1.0f, 0.5f, 1.0f);
+    val objectBackColor = floatArrayOf(0.0f, 1.0f, 1.0f);
+    val objectShininess = 32.0f;
+    val viewPos = floatArrayOf(0f, 0f, 0f)
+
+
+    fun draw(model: FloatArray, view: FloatArray, projection: FloatArray) {
 
         // Use shader program
         GLES31.glUseProgram(m_Program)
+        printGlError(MagicCardTag, "Use Program")
 
         // Bind vertex array that contains structure of vertex data for drawing
         GLES31.glBindVertexArray(m_VAO[0])
+        printGlError(MagicCardTag, "Bind Vertex Array")
 
         // Add color to shader program
-        GLES31.glUniform4fv(GLES31.glGetUniformLocation(m_Program, "uColor"), 1, m_Color, 0)
+        //GLES31.glUniform4fv(GLES31.glGetUniformLocation(m_Program, "uColor"), 1, m_Color, 0)
+        //printGlError(MagicCardTag, "Bind Vertex Array")
 
         // Add MVP to shader program
-        GLES31.glUniformMatrix4fv(GLES31.glGetUniformLocation(m_Program, "uMVPMatrix"), 1, false, mvpMatrix, 0)
+        GLES31.glUniformMatrix4fv(GLES31.glGetUniformLocation(m_Program, "uModel"), 1, false, model, 0)
+        GLES31.glUniformMatrix4fv(GLES31.glGetUniformLocation(m_Program, "uView"), 1, false, view, 0)
+        GLES31.glUniformMatrix4fv(GLES31.glGetUniformLocation(m_Program, "uProjection"), 1, false, projection, 0)
+        //GLES31.glUniformMatrix2fv(GLES31.glGetUniformLocation(m_Program, "uTextureScale"), 1, false, m_TextureScale, 0)
+        printGlError(MagicCardTag, "MVP Stuff")
+
+        // View / Camera Pos
+//        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "viewPos"), 1, viewPos, 0);
+//        printGlError(MagicCardTag, "View POS")
+
+        // Lighting Specification
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "light.position"), 1, lightPos, 0);
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "light.ambient"), 1, lightAmbient, 0);
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "light.diffuse"), 1, lightDiffuse, 0);
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "light.specular"), 1, lightSpecular, 0);
+        GLES31.glUniform1f(GLES31.glGetUniformLocation(m_Program, "light.constant"), lightConstant)
+        GLES31.glUniform1f(GLES31.glGetUniformLocation(m_Program, "light.linear"), lightLinear)
+        GLES31.glUniform1f(GLES31.glGetUniformLocation(m_Program, "light.quadratic"), lightQuadratic)
+        printGlError(MagicCardTag, "Light")
+
+        // Material Information
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "object.frontcolor"), 1, objectFrontColor, 0)
+        GLES31.glUniform3fv(GLES31.glGetUniformLocation(m_Program, "object.backcolor"), 1, objectBackColor, 0)
+        GLES31.glUniform1f(GLES31.glGetUniformLocation(m_Program, "object.shininess"), objectShininess)
+        printGlError(MagicCardTag, "Object")
 
         // Draw Arrays defined by the VAC
         GLES31.glDrawArrays(GLES31.GL_TRIANGLES, 0, m_Vertices.size / (COORDS_PER_VERTEX + COORDS_PER_NORMAL + COORD_PER_TEXTURE))
+        printGlError(MagicCardTag, "Draw Arrays")
 
         // Remove active vertex array
         GLES31.glBindVertexArray(0)

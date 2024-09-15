@@ -34,11 +34,12 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         // Set the background frame color
         GLES31.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES31.glEnable(GLES31.GL_DEPTH_TEST)
 
         printGLVersion(MyGLRendererTag)
         printGlError(MyGLRendererTag, "Surface Created Error")
 
-        m_Triangle = Triangle()
+        //m_Triangle = Triangle()
         m_MagicCard = MagicCard(context)
         //m_Square = Square()
     }
@@ -52,7 +53,7 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
         val modelMatrix = FloatArray(16)
         Matrix.setIdentityM(modelMatrix, 0)
         Matrix.translateM(modelMatrix, 0, 0f, 0f, -250f)
-        Matrix.rotateM(modelMatrix,0, 0f, 0f, 1f, 0f)
+        Matrix.rotateM(modelMatrix,0, angle, 0f, 1f, 0f)
 
         // Create View Matrix
         val viewMatrix = FloatArray(16)
@@ -63,15 +64,15 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
         Matrix.perspectiveM(projMatrix, 0, 45f, aspectRatio, 0.1f, 10_000f)
 
         // Construct the MVP Matrix
-        val mvpMatrix = FloatArray(16)
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0)
-        Matrix.multiplyMM(mvpMatrix, 0, projMatrix, 0, mvpMatrix, 0)
+        //val mvpMatrix = FloatArray(16)
+        //Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0)
+        //Matrix.multiplyMM(mvpMatrix, 0, projMatrix, 0, mvpMatrix, 0)
 
-        m_MagicCard.draw(mvpMatrix)
+        m_MagicCard.draw(model = modelMatrix, view = viewMatrix, projection = projMatrix)
 
 
 //        // Redraw background color
-//        GLES31.glClear(GLES31.GL_COLOR_BUFFER_BIT or GLES31.GL_DEPTH_BUFFER_BIT)
+//        GLES31.glClear(GLES31.GL_COLOR_BUFFER_BIT)
 //
 //        // Set the camera position (View matrix)
 //        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
