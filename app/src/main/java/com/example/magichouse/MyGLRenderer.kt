@@ -9,6 +9,7 @@ import android.opengl.GLSurfaceView
 import android.opengl.Matrix
 import android.os.SystemClock
 import android.util.Log
+import androidx.compose.material3.Card
 import javax.microedition.khronos.opengles.GL
 import javax.microedition.khronos.opengles.GL10Ext
 
@@ -39,9 +40,15 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
         printGLVersion(MyGLRendererTag)
         printGlError(MyGLRendererTag, "Surface Created Error")
 
-        //m_Triangle = Triangle()
-        m_MagicCard = MagicCard(context)
-        //m_Square = Square()
+        // Initiate Random Card
+        CardFetcher(context).apply {
+            GetRandomCard().apply {
+                m_MagicCard = MagicCard(context, first, second)
+            }
+        }
+
+        // Initiate the fun triangle ...
+        m_Triangle = Triangle()
     }
 
     override fun onDrawFrame(unused: GL10) {

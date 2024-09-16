@@ -1,6 +1,7 @@
 package com.example.magichouse
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.opengl.GLES31
 import android.util.Log
 import java.nio.ByteBuffer
@@ -165,7 +166,7 @@ class Square {
         }
 }
 
-class MagicCard(private val context: Context)
+class MagicCard(private val context: Context, private val cardFront: Bitmap, private val cardBack: Bitmap)
 {
     private var m_VBO: IntArray
     private var m_VAO: IntArray
