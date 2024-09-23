@@ -5,6 +5,8 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
+uniform sampler2D texture1;
+
 out vec4 FragColor;
 
 struct Light {
@@ -46,6 +48,8 @@ void main() {
     vec3 specular = light.specular * spec;
 
     // sum it up
-    vec3 result = (specular * ambient + diffuse) * object.frontcolor;
+    //vec3 result = (specular * ambient + diffuse) * object.frontcolor;
+    vec3 result = (specular * ambient + diffuse) * texture(texture1, TexCoords).rgb;
+    //vec3 result = texture(texture1, TexCoords).rgb;
     FragColor = vec4(result, 1.0);
 }

@@ -1,6 +1,7 @@
 package com.example.magichouse
 
 import android.content.Context
+import android.graphics.Bitmap
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -10,6 +11,10 @@ import android.opengl.Matrix
 import android.os.SystemClock
 import android.util.Log
 import androidx.compose.material3.Card
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.microedition.khronos.opengles.GL
 import javax.microedition.khronos.opengles.GL10Ext
 
@@ -23,6 +28,62 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
     @Volatile
     var angle: Float = 0f
+        set(value) {
+            field = value % 360
+            if (field < 0) {
+                field += 360
+            }
+            onAngleChanged(value)
+        }
+
+    private var thresholdReached = false
+
+    fun onAngleChanged(newValue: Float) {
+        // Normalize the angle to a range between 0 and 360 degrees
+        val normalizedAngle = newValue % 360
+
+        // Check if the angle has crossed the 270 degrees threshold
+        if (normalizedAngle >= 270 && !thresholdReached) {
+            // Trigger the resource switch when reaching 270 degrees
+            switchResource()
+
+            // Set thresholdReached to true to avoid repeated switching
+            thresholdReached = true
+        } else if (normalizedAngle < 270) {
+            // Reset thresholdReached when we go below 270 degrees again
+            thresholdReached = false
+        }
+
+        Log.e(MyGLRendererTag, "Angle changed to: $newValue (Normalized: $normalizedAngle)")
+    }
+
+    fun switchResource() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+//                // Perform the network request in the IO context
+//                val (firstBitmap, secondBitmap) = performNetworkRequest()
+//
+//                // Switch back to the Main thread to update the UI
+//                withContext(Dispatchers.Main) {
+//                    updateUI(firstBitmap, secondBitmap)
+//                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun performNetworkRequest(): Pair<Bitmap, Bitmap> {
+        // Initiate Random Card
+        return CardFetcher(context).GetRandomCard()
+    }
+
+    fun updateUI(first: Bitmap, second: Bitmap) {
+        // Update the UI with the result of the network call
+        m_MagicCard.update(first, second)
+
+        Log.e(MyGLRendererTag,"Network result: ")
+    }
 
     // vPMatrix is an abbreviation for "Model View Projection Matrix"
     private val vPMatrix = FloatArray(16)
@@ -55,6 +116,7 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
         // Redraw background color
         GLES31.glClear(GLES31.GL_COLOR_BUFFER_BIT or GLES31.GL_DEPTH_BUFFER_BIT)
+        GLES31.glClearColor(0.0f,0.0f,0.0f,1.0f)
 
         // Create Model Matrix
         val modelMatrix = FloatArray(16)

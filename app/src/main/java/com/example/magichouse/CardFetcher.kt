@@ -116,11 +116,11 @@ class CardFetcher(private val context: Context) {
 
     fun GetRandomCard(): Pair<Bitmap, Bitmap> {
         var frontFace: Bitmap = notFoundBitmap
-        var backFace: Bitmap = notFoundBitmap
+        var backFace: Bitmap = backsideBitmap
 
         queryRandomCard()?.run {
             parseImageUrl(this)?.run {
-                when (length()) {
+                when (size) {
                     1 -> { // Only one face, populate the other face with default magic back
                         downloadImageAsBitmap(this[0])?.run{
                             Bitmap.createScaledBitmap(this, cardWidth, cardHeight, false).apply {

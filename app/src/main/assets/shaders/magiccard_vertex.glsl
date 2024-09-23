@@ -24,7 +24,8 @@ void main() {
     FragPos = vec3(uModel * vec4(aPos, 1.0));
 
     // Compute TexCoords to Clip Space
-    TexCoords = ((aTexCoord - vec2(0.5,0.5))) + vec2(0.5,0.5);
+    TexCoords = vec2(aTexCoord.s, 1.0 - aTexCoord.t);
+    //TexCoords = ((aTexCoord - vec2(0.5,0.5))) + vec2(0.5,0.5);
     //TexCoords = (uTextureScale * (aTexCoord - vec2(0.5,0.5))) + vec2(0.5,0.5);
 }
 
