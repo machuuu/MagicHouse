@@ -10,11 +10,18 @@ jobs:
   ktlint:
     name: Check Code Quality
     runs-on: ubuntu-latest
-
     steps:
-      - name: Clone PR
+      - name: "checkout"
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Run Ktlint
+      - name: "Ktlint"
         uses: lucasnlm/ktlint-action@master
+    detekt:
+      runs-on: ubuntu-latest
+      steps:
+        - name: "checkout"
+          uses: actions/checkout@v2
+
+        - name: "detekt"
+          uses: natiginfo/action-detekt-all@1.23.7
