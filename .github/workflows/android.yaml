@@ -1,10 +1,11 @@
 name: Android CI
 
 on:
-  # push:
+  push:
+    branches:
+      - '*'
+  # pull_request:
   #   branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
 
 jobs:
   ktlint:
@@ -17,11 +18,11 @@ jobs:
           fetch-depth: 1
       - name: "Ktlint"
         uses: lucasnlm/ktlint-action@master
-    detekt:
-      runs-on: ubuntu-latest
-      steps:
-        - name: "checkout"
-          uses: actions/checkout@v2
+  detekt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v2
 
-        - name: "detekt"
-          uses: natiginfo/action-detekt-all@1.23.7
+      - name: "detekt"
+        uses: natiginfo/action-detekt-all@1.23.7
