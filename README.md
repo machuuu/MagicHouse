@@ -1,3 +1,5 @@
+[![reviewdog](https://github.com/machuuu/MagicCardsOGLES/workflows/reviewdog/badge.svg?branch=main&event=push)](https://github.com/machuuu/MagicCardsOGLES/actions?query=workflow%3Areviewdog+event%3Apush+branch%3Amain)
+
 # Requirements
 
 1. Android Studio
