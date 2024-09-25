@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - '*'
-  # pull_request:
-  #   branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
 
 jobs:
   ktlint:
@@ -22,12 +22,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-check
-  # detekt:
-  #   name: Static Code Analysis
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "checkout"
-  #       uses: actions/checkout@master
-
-  #     - name: "detekt"
-  #       uses: natiginfo/action-detekt-all@1.23.7
