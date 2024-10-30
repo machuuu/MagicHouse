@@ -610,32 +610,4 @@ class MagicCard(private val context: Context, private val cardFront: Bitmap, pri
         // Stop using program
         GLES31.glUseProgram(0)
     }
-
-    fun update(first: Bitmap, second: Bitmap) {
-
-        GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, 0)
-
-        GLES31.glDeleteTextures(1, m_frontTexture, 0)
-        m_frontTexture = IntArray(1).apply {
-            GLES31.glGenTextures(1, this, 0)
-            GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, this[0])
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_MIN_FILTER, GLES31.GL_LINEAR)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_MAG_FILTER, GLES31.GL_LINEAR)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_WRAP_S, GLES31.GL_CLAMP_TO_EDGE)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_WRAP_T, GLES31.GL_CLAMP_TO_EDGE)
-            GLUtils.texImage2D(GLES31.GL_TEXTURE_2D, 0, cardFront, 0)
-        }
-
-        GLES31.glDeleteTextures(1, m_backTexture, 0)
-        m_backTexture = IntArray(1).apply {
-            GLES31.glGenTextures(1, this, 0)
-            GLES31.glBindTexture(GLES31.GL_TEXTURE_2D, this[0])
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_MIN_FILTER, GLES31.GL_LINEAR)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_MAG_FILTER, GLES31.GL_LINEAR)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_WRAP_S, GLES31.GL_CLAMP_TO_EDGE)
-            GLES31.glTexParameteri(GLES31.GL_TEXTURE_2D, GLES31.GL_TEXTURE_WRAP_T, GLES31.GL_CLAMP_TO_EDGE)
-            GLUtils.texImage2D(GLES31.GL_TEXTURE_2D, 0, cardBack, 0)
-        }
-    }
-
 }

@@ -1,14 +1,31 @@
 package com.example.magichouse
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 
 class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
 
     private val renderer: MyGLRenderer
+
+    private val TOUCH_SCALE_FACTOR = 180.0f / (320 * 4)
+    private var previousX = 0f
+    private var previousY = 0f
+    private var thresholdReached = false
+    private var angle = 0f
+        set(value) {
+            field = value % 360
+            if (field < 0) field += 360
+            onAngleChanged(field)
+        }
 
     init {
 
@@ -23,10 +40,6 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
         // Render the view only when there is a change in the drawing data
         renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
     }
-
-
-    private var previousX: Float = 0f
-    private var previousY: Float = 0f
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
         // MotionEvent reports input details from the touch screen
@@ -52,7 +65,8 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
                     dy *= -1
                 }
 
-                renderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
+                angle += (dx + dy) * TOUCH_SCALE_FACTOR
+                renderer.onAngleChanged(angle)
                 requestRender()
             }
         }
@@ -60,5 +74,39 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
         previousX = x
         previousY = y
         return true
+    }
+
+    private fun onAngleChanged(newAngle: Float) {
+        // Check if the angle has crossed the 270-degree threshold
+        if (newAngle >= 270 && !thresholdReached) {
+            switchResource()
+            thresholdReached = true
+        } else if (newAngle < 270) {
+            thresholdReached = false
+        }
+
+        Log.e("MyGLSurfaceView", "Angle changed to: $newAngle")
+    }
+
+    private fun switchResource() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val (firstBitmap, secondBitmap) = performNetworkRequest()
+                queueEvent {
+                    updateUI(firstBitmap, secondBitmap)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun performNetworkRequest(): Pair<Bitmap, Bitmap> {
+        return CardFetcher(context).GetRandomCard()
+    }
+
+    private fun updateUI(first: Bitmap, second: Bitmap) {
+        renderer.onCardUpdated(first, second)
+        Log.e("MyGLSurfaceView", "Network result updated UI.")
     }
 }
