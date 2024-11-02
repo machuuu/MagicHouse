@@ -2,6 +2,8 @@ package com.example.magichouse
 
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,11 +32,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.main_activity)
 
-        // Create a GLSurfaceView instance and set it
-        // as the ContentView for this Activity.
-        gLView = MyGLSurfaceView(this)
-        setContentView(gLView)
+        val myButton: Button = findViewById(R.id.myButton)
+        myButton.setOnClickListener {
+            // Handle button click
+            Toast.makeText(this, "Button clicked!", Toast.LENGTH_SHORT).show()
+        }
 
     }
 }

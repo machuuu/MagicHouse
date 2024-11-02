@@ -3,20 +3,21 @@ package com.example.magichouse
 import android.content.Context
 import android.graphics.Bitmap
 import android.opengl.GLSurfaceView
-import android.view.MotionEvent
+import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-private const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
+private const val TOUCH_SCALE_FACTOR: Float = 180.0f / (320f * 2)
 
-class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
+class MyGLSurfaceView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : GLSurfaceView(context, attrs) {
 
-    private val renderer: MyGLRenderer
-
-    private val TOUCH_SCALE_FACTOR = 180.0f / (320 * 4)
+    private val renderer: MyGLRenderer = MyGLRenderer(context)
     private var previousX = 0f
     private var previousY = 0f
     private var thresholdReached = false
@@ -28,11 +29,8 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
         }
 
     init {
-
         // Create an OpenGL ES 3.2 context
         setEGLContextClientVersion(3)
-
-        renderer = MyGLRenderer(context)
 
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer)
@@ -42,25 +40,20 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
-        // MotionEvent reports input details from the touch screen
-        // and other input controls. In this case, you are only
-        // interested in events where the touch position changed.
-
         val x: Float = e.x
         val y: Float = e.y
 
         when (e.action) {
             MotionEvent.ACTION_MOVE -> {
-
                 var dx: Float = x - previousX
                 var dy: Float = y - previousY
 
-                // reverse direction of rotation above the mid-line
+                // Reverse direction of rotation above the mid-line
                 if (y > height / 2) {
                     dx *= -1
                 }
 
-                // reverse direction of rotation to left of the mid-line
+                // Reverse direction of rotation to the left of the mid-line
                 if (x < width / 2) {
                     dy *= -1
                 }
@@ -77,6 +70,10 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
     }
 
     private fun onAngleChanged(newAngle: Float) {
+
+        // stop changing cards due to spinning
+        return
+
         // Check if the angle has crossed the 270-degree threshold
         if (newAngle >= 270 && !thresholdReached) {
             switchResource()
