@@ -1,7 +1,9 @@
 package com.example.magichouse
 
+import android.graphics.Bitmap
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -25,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.viewinterop.AndroidView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -34,11 +39,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        val myGLView: MyGLSurfaceView = findViewById(R.id.myGLSurfaceView)
+
         val myButton: Button = findViewById(R.id.myButton)
         myButton.setOnClickListener {
-            // Handle button click
-            Toast.makeText(this, "Button clicked!", Toast.LENGTH_SHORT).show()
+            myGLView.updateCard()
         }
-
     }
 }

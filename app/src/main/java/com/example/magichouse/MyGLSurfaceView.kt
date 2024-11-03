@@ -69,6 +69,10 @@ class MyGLSurfaceView @JvmOverloads constructor(
         return true
     }
 
+    fun updateCard() {
+        switchResource()
+    }
+
     private fun onAngleChanged(newAngle: Float) {
 
         // stop changing cards due to spinning
@@ -104,6 +108,7 @@ class MyGLSurfaceView @JvmOverloads constructor(
 
     private fun updateUI(first: Bitmap, second: Bitmap) {
         renderer.onCardUpdated(first, second)
+        requestRender()
         Log.e("MyGLSurfaceView", "Network result updated UI.")
     }
 }
