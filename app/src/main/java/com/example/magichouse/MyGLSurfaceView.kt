@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TOUCH_SCALE_FACTOR: Float = 180.0f / (320f * 2)
 
@@ -69,27 +70,15 @@ class MyGLSurfaceView @JvmOverloads constructor(
         return true
     }
 
-    fun updateCard() {
-        switchResource()
+    fun updateCard(onComplete: () -> Unit) {
+        switchResource(onComplete)
     }
 
     private fun onAngleChanged(newAngle: Float) {
-
-        // stop changing cards due to spinning
-        return
-
-        // Check if the angle has crossed the 270-degree threshold
-        if (newAngle >= 270 && !thresholdReached) {
-            switchResource()
-            thresholdReached = true
-        } else if (newAngle < 270) {
-            thresholdReached = false
-        }
-
-        Log.e("MyGLSurfaceView", "Angle changed to: $newAngle")
+        // do nothing
     }
 
-    private fun switchResource() {
+    private fun switchResource(onComplete: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val (firstBitmap, secondBitmap) = performNetworkRequest()
@@ -98,6 +87,10 @@ class MyGLSurfaceView @JvmOverloads constructor(
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                withContext(Dispatchers.Main) {
+                    onComplete()
+                }
             }
         }
     }

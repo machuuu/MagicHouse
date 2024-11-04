@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">MagicHouse</string>
-    <string name="randomButton">Random</string>
+    <string name="randomButton">Next Card</string>
 </resources>

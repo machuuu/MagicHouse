@@ -43,7 +43,10 @@ class MainActivity : ComponentActivity() {
 
         val myButton: Button = findViewById(R.id.myButton)
         myButton.setOnClickListener {
-            myGLView.updateCard()
+            myButton.isEnabled = false
+            myGLView.updateCard {
+                myButton.isEnabled = true
+            }
         }
     }
 }
