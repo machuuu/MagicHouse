@@ -1,4 +1,4 @@
-[![reviewdog](https://github.com/machuuu/MagicCardsOGLES/workflows/reviewdog/badge.svg?branch=main&event=push)](https://github.com/machuuu/MagicCardsOGLES/actions?query=workflow%3Areviewdog+event%3Apush+branch%3Amain)
+[![reviewdog](https://github.com/machuuu/MagicHouse/workflows/reviewdog/badge.svg?branch=main&event=push)](https://github.com/machuuu/MagicHouse/actions?query=workflow%3Areviewdog+event%3Apush+branch%3Amain)
 
 # Requirements
 
