@@ -59,7 +59,7 @@ class MyGLSurfaceView @JvmOverloads constructor(
                     dy *= -1
                 }
 
-                angle += (dx + dy) * TOUCH_SCALE_FACTOR
+                angle -= (dx + dy) * TOUCH_SCALE_FACTOR
                 renderer.onAngleChanged(angle)
                 requestRender()
             }
