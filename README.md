@@ -27,7 +27,8 @@
 4. Phong Based Lighting
 5. REST API Query
    1. HTTP Get
-6. Fun fidget spinner application for my Magic friends
+6. Learn how to public an Android Application to the Google Play Store
+7. Fun fidget spinner application for my Magic friends
 
 # Results
 
